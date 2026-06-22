@@ -1,0 +1,25 @@
+FROM php:8.2-fpm-alpine
+
+# Install system dependencies
+RUN apk add --no-cache \
+    curl \
+    libpng-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    git \
+    postgresql-dev \
+    linux-headers \
+    bash
+
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_pgsql bcmath gd
+
+# Get latest Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /var/www/backend
+
+# We don't copy the application code here yet for the boilerplate.
+# This will be mounted via docker-compose for dev.

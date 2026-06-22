@@ -1,0 +1,20 @@
+name: hypertension-system-prod
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    # In production, we build static files and serve via Nginx
+    # No dev server running
+    command: echo "Frontend static files built."
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    # Production php-fpm configuration
+
+  ml-engine:
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+    # No reload flag in production

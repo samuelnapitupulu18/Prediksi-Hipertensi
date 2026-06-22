@@ -1,0 +1,11 @@
+{
+    "version": "1.0.0-sgo-mock",
+    "algorithm": "XGBoost",
+    "optimization": "Social Group Optimization (SGO) - MOCK",
+    "hyperparameters": {
+        "learning_rate": 0.035,
+        "max_depth": 9,
+        "n_estimators": 285
+    },
+    "description": "This is a synthetic dummy model generated for testing the API."
+}

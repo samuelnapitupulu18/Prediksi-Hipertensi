@@ -1,0 +1,103 @@
+name: hypertension-system
+
+services:
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: hyper_nginx
+    ports:
+      - "${NGINX_HTTP_PORT:-80}:80"
+      - "${NGINX_HTTPS_PORT:-443}:443"
+    volumes:
+      - ./frontend:/var/www/frontend
+      - ./backend:/var/www/backend
+    networks:
+      - hyper_public_net
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: hyper_frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - hyper_public_net
+    # Port is exposed to network only, accessible via nginx proxy
+    expose:
+      - "5173"
+    restart: unless-stopped
+    command: npm run dev -- --host 0.0.0.0
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: hyper_backend
+    volumes:
+      - ./backend:/var/www/backend
+    networks:
+      - hyper_public_net
+      - hyper_internal_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ml-engine:
+        condition: service_started
+    expose:
+      - "9000"
+    restart: unless-stopped
+
+  ml-engine:
+    build:
+      context: ./ml-engine
+      dockerfile: Dockerfile
+    container_name: hyper_ml_engine
+    volumes:
+      - ./ml-engine:/app
+    networks:
+      - hyper_internal_net
+    expose:
+      - "8000"
+    restart: unless-stopped
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: hyper_postgres
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-hypertension_db}
+      POSTGRES_USER: ${DB_USERNAME:-hyper_admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-SecureP@ssw0rd!2024}
+    volumes:
+      - hyper_pgdata:/var/lib/postgresql/data
+    networks:
+      - hyper_internal_net
+    expose:
+      - "5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-hyper_admin} -d ${DB_DATABASE:-hypertension_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  hyper_public_net:
+    driver: bridge
+  hyper_internal_net:
+    internal: true
+
+volumes:
+  hyper_pgdata:
