@@ -1,8 +1,18 @@
 <template>
   <div class="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
     
+    <!-- Mobile Backdrop -->
+    <div 
+      v-if="isMobileMenuOpen" 
+      @click="isMobileMenuOpen = false" 
+      class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-20 lg:hidden"
+    ></div>
+
     <!-- Sidebar -->
-    <aside class="w-64 flex-shrink-0 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col transition-all z-20">
+    <aside 
+      class="w-64 flex-shrink-0 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col transition-transform duration-300 z-30 fixed lg:static inset-y-0 left-0"
+      :class="isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
+    >
       <div class="h-16 flex items-center px-6 border-b border-slate-100 dark:border-slate-800">
         <div class="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3 shadow-lg shadow-blue-500/20">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.48 12H2"/></svg>
@@ -13,6 +23,7 @@
       <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
         <router-link 
           to="/dashboard" 
+          @click="isMobileMenuOpen = false"
           class="relative flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-200 group overflow-hidden"
           :class="[$route.name === 'dashboard' ? 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200']"
         >
@@ -23,6 +34,7 @@
         
         <router-link 
           to="/screening/new" 
+          @click="isMobileMenuOpen = false"
           v-if="authStore.isDokter || authStore.isPerawat"
           class="relative flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-200 group overflow-hidden"
           :class="[$route.name === 'screening-new' ? 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200']"
@@ -34,6 +46,7 @@
 
         <router-link 
           to="/xai" 
+          @click="isMobileMenuOpen = false"
           v-if="authStore.isDokter || authStore.isSuperAdmin"
           class="relative flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-200 group overflow-hidden"
           :class="[$route.name === 'xai-dashboard' ? 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200']"
@@ -45,6 +58,7 @@
 
         <router-link 
           to="/admin/users" 
+          @click="isMobileMenuOpen = false"
           v-if="authStore.isSuperAdmin"
           class="relative flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-200 group overflow-hidden"
           :class="[$route.name === 'admin-users' ? 'text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200']"
@@ -99,11 +113,16 @@
 
       <!-- Top header for mobile (hidden on desktop) -->
       <header class="lg:hidden h-16 flex items-center justify-between px-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10">
-        <div class="flex items-center gap-2">
-          <div class="h-6 w-6 bg-blue-600 rounded flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.48 12H2"/></svg>
+        <div class="flex items-center gap-3">
+          <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="p-2 -ml-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+          </button>
+          <div class="flex items-center gap-2">
+            <div class="h-6 w-6 bg-blue-600 rounded flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.48 12H2"/></svg>
+            </div>
+            <h2 class="text-lg font-bold text-slate-900 dark:text-white">HT-Detect</h2>
           </div>
-          <h2 class="text-lg font-bold text-slate-900 dark:text-white">HT-Detect</h2>
         </div>
       </header>
 
@@ -126,12 +145,14 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
 import ThemeToggle from '../components/ThemeToggle.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const isMobileMenuOpen = ref(false)
 
 async function handleLogout() {
   await authStore.logout()
