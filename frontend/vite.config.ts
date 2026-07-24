@@ -14,5 +14,18 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     allowedHosts: true,
+    proxy: {
+      // Backend Laravel lokal: php artisan serve --port=8001
+      '/api': {
+        target: 'http://127.0.0.1:8001',
+        changeOrigin: false,
+        secure: false,
+      },
+      '/sanctum': {
+        target: 'http://127.0.0.1:8001',
+        changeOrigin: false,
+        secure: false,
+      }
+    }
   }
 })

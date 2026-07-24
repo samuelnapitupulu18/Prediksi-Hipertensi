@@ -1,30 +1,35 @@
 import api from './api'
-import type { Patient } from '../types/patient'
+
+// =====================================================================
+// Patient Service — seluruh data pasien berasal dari backend Laravel.
+// Tidak ada data cadangan lokal; kegagalan jaringan diteruskan sebagai
+// error agar tidak ada data fiktif yang tampil di layar.
+// =====================================================================
 
 export const patientService = {
   getPatients: async (search?: string) => {
-    const params = search ? { search } : {}
-    const response = await api.get('/patients', { params })
-    return response.data
+    const res = await api.get('/patients', { params: search ? { search } : {} })
+    return res.data
   },
 
-  getPatient: async (id: number) => {
-    const response = await api.get(`/patients/${id}`)
-    return response.data.data
+  getPatient: async (id: number | string) => {
+    const res = await api.get(`/patients/${id}`)
+    // Controller membungkus respons dalam { data: patient }
+    return res.data.data ?? res.data
   },
 
-  createPatient: async (data: Omit<Patient, 'id' | 'created_at' | 'updated_at'>) => {
-    const response = await api.post('/patients', data)
-    return response.data.data
+  createPatient: async (data: any) => {
+    const res = await api.post('/patients', data)
+    return res.data
   },
 
-  updatePatient: async (id: number, data: Partial<Patient>) => {
-    const response = await api.put(`/patients/${id}`, data)
-    return response.data.data
+  updatePatient: async (id: number, data: any) => {
+    const res = await api.put(`/patients/${id}`, data)
+    return res.data
   },
 
   deletePatient: async (id: number) => {
-    const response = await api.delete(`/patients/${id}`)
-    return response.data
-  }
+    const res = await api.delete(`/patients/${id}`)
+    return res.data
+  },
 }

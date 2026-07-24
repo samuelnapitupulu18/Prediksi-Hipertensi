@@ -37,6 +37,12 @@ class PatientController extends Controller
             'address' => 'nullable|string'
         ]);
 
+        // Kolom di database bernama phone_number
+        if (array_key_exists('phone', $validated)) {
+            $validated['phone_number'] = $validated['phone'];
+            unset($validated['phone']);
+        }
+
         $patient = $this->patientService->createPatient($validated);
         
         $this->activityLogService->log(
@@ -68,6 +74,12 @@ class PatientController extends Controller
             'phone' => 'nullable|string|max:15',
             'address' => 'nullable|string'
         ]);
+
+        // Kolom di database bernama phone_number
+        if (array_key_exists('phone', $validated)) {
+            $validated['phone_number'] = $validated['phone'];
+            unset($validated['phone']);
+        }
 
         $patient = $this->patientService->updatePatient($id, $validated);
 

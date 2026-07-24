@@ -8,18 +8,25 @@ const api = axios.create({
     'Accept': 'application/json',
     'Content-Type': 'application/json'
   },
-  // Crucial for Laravel Sanctum authentication (sends cookies)
-  withCredentials: true,
-  withXSRFToken: true,
+  // Use stateless bearer tokens instead of cookies
+  withCredentials: false,
+  withXSRFToken: false,
 })
+
+// Load bearer token from localStorage on startup
+const savedToken = localStorage.getItem('auth_token')
+if (savedToken) {
+  api.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`
+}
 
 // Add response interceptor for global error handling
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Logic to clear auth store and redirect to login
-      // will be handled in the router or store
+      // Token tidak berlaku lagi → bersihkan sesi
+      localStorage.removeItem('auth_token')
+      delete api.defaults.headers.common['Authorization']
     }
     return Promise.reject(error)
   }

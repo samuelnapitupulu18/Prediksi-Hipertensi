@@ -16,18 +16,17 @@ class Screening extends Model
         'gender',
         'bmi',
         'smoking_status',
-        'alcohol_consumption',
         'physical_activity',
         'family_history',
-        'diabetes',
+        'red_meat_consumption',
+        'salt_consumption',
         'systolic_bp',
         'diastolic_bp',
-        'cholesterol_level'
     ];
 
     protected $casts = [
         'family_history' => 'boolean',
-        'diabetes' => 'boolean',
+        'smoking_status' => 'boolean',
     ];
 
     public function patient()

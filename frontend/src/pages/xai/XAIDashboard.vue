@@ -17,6 +17,13 @@
       <div class="col-span-3 h-80 bg-slate-200 rounded-xl border border-slate-100"></div>
     </div>
 
+    <!-- Empty State: belum ada skrining -->
+    <div v-else-if="!hasData" class="flex flex-col items-center justify-center py-20 gap-4 text-center rounded-xl border border-dashed border-slate-300 bg-white">
+      <div class="h-16 w-16 rounded-2xl bg-blue-50 flex items-center justify-center text-3xl">🤖</div>
+      <p class="text-sm font-medium text-slate-600 max-w-sm">Belum ada data skrining untuk dianalisis. Lakukan skrining terlebih dahulu, lalu hasil prediksi model akan tampil di sini.</p>
+      <router-link :to="{ name: 'screening-new' }" class="px-5 py-2.5 text-sm font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-all active:scale-95">Mulai Skrining</router-link>
+    </div>
+
     <!-- Bento Box Grid Layout -->
     <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-6">
       
@@ -33,6 +40,7 @@
         <div class="text-center mt-2">
           <p class="text-3xl font-extrabold" :class="riskColor">{{ predictionData.risk_level.toUpperCase() }}</p>
           <p class="text-sm text-slate-500 mt-1">Confidence Score: {{ (predictionData.confidence_score * 100).toFixed(1) }}%</p>
+          <p v-if="latestPatientName" class="text-xs text-slate-400 mt-1">Skrining terakhir: {{ latestPatientName }}</p>
         </div>
       </div>
 
@@ -77,22 +85,19 @@ import VChart from 'vue-echarts'
 // Register ECharts modules
 use([CanvasRenderer, GaugeChart, BarChart, TitleComponent, TooltipComponent, GridComponent])
 
-const isLoading = ref(true)
+import { screeningService } from '../../services/screeningService'
 
-// Mocked Data from ML Engine Response Schema
+const isLoading = ref(true)
+const hasData = ref(true)
+const latestPatientName = ref('')
+
+// Diisi dari prediksi skrining terbaru (API backend / penyimpanan lokal)
 const predictionData = ref({
-  risk_level: 'high',
-  confidence_score: 0.89,
-  probability: { low: 0.05, medium: 0.06, high: 0.89 },
-  inference_time_ms: 12.4,
-  feature_importance: [
-    { feature: 'systolic_bp', importance: 0.35 },
-    { feature: 'age', importance: 0.20 },
-    { feature: 'bmi', importance: 0.15 },
-    { feature: 'diastolic_bp', importance: 0.12 },
-    { feature: 'cholesterol_level', importance: 0.08 },
-    { feature: 'smoking_status', importance: 0.05 }
-  ]
+  risk_level: 'low',
+  confidence_score: 0,
+  probability: { low: 0, medium: 0, high: 0 },
+  inference_time_ms: 0,
+  feature_importance: [] as { feature: string; importance: number; label?: string }[]
 })
 
 const riskColor = computed(() => {
@@ -141,7 +146,8 @@ const barOption = computed(() => {
     xAxis: { type: 'value', show: false },
     yAxis: { 
       type: 'category', 
-      data: sortedFI.map(f => f.feature.toUpperCase().replace('_', ' ')),
+      // Pakai label Bahasa Indonesia dari ML Engine; kode fitur hanya cadangan
+      data: sortedFI.map(f => f.label || f.feature.toUpperCase().replace(/_/g, ' ')),
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: { color: '#64748b', fontSize: 11, fontWeight: 'bold' }
@@ -158,10 +164,28 @@ const barOption = computed(() => {
   }
 })
 
-onMounted(() => {
-  // Simulate network delay
-  setTimeout(() => {
+onMounted(async () => {
+  try {
+    const res: any = await screeningService.getScreenings(1)
+    const latest = res.data?.[0]
+    if (latest?.prediction) {
+      const p = latest.prediction
+      predictionData.value = {
+        risk_level: p.risk_level || 'low',
+        confidence_score: Number(p.confidence_score || 0),
+        probability: { low: 0, medium: 0, high: 0, ...(p.probability_distribution || p.probability || {}) },
+        inference_time_ms: Number(p.inference_time_ms || 0),
+        feature_importance: p.feature_importance || []
+      }
+      latestPatientName.value = latest.patient?.name || latest.name || ''
+    } else {
+      hasData.value = false
+    }
+  } catch (e) {
+    console.warn('Gagal memuat data XAI', e)
+    hasData.value = false
+  } finally {
     isLoading.value = false
-  }, 1200)
+  }
 })
 </script>

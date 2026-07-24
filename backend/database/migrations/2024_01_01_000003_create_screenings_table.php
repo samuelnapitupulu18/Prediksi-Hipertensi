@@ -13,18 +13,17 @@ return new class extends Migration
             $table->foreignId('patient_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->comment('Perawat/Dokter yang menginput');
             
-            // 11 Clinical Features
+            // 10 Clinical Features based on dataset
             $table->integer('age');
             $table->enum('gender', ['male', 'female']);
             $table->float('bmi');
-            $table->enum('smoking_status', ['never', 'former', 'current']);
-            $table->enum('alcohol_consumption', ['none', 'moderate', 'heavy']);
-            $table->enum('physical_activity', ['low', 'moderate', 'high']);
             $table->boolean('family_history');
-            $table->boolean('diabetes');
+            $table->enum('physical_activity', ['low', 'moderate', 'high']);
+            $table->boolean('smoking_status');
+            $table->enum('red_meat_consumption', ['low', 'moderate', 'high']);
+            $table->enum('salt_consumption', ['low', 'moderate', 'high']);
             $table->integer('systolic_bp');
             $table->integer('diastolic_bp');
-            $table->enum('cholesterol_level', ['normal', 'borderline', 'high']);
             
             $table->timestamps();
         });

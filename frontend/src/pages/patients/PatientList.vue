@@ -147,7 +147,8 @@ const fetchPatients = async () => {
     const data = await patientService.getPatients(search.value)
     patients.value = data.data // pagination data array
   } catch (e) {
-    console.error(e)
+    console.error('Gagal memuat daftar pasien dari server:', e)
+    patients.value = []
   } finally {
     loading.value = false
   }
@@ -173,7 +174,7 @@ const openEditModal = (patient: any) => {
     name: patient.name,
     date_of_birth: patient.date_of_birth,
     gender: patient.gender,
-    phone: patient.phone || '',
+    phone: patient.phone_number || patient.phone || '',
     address: patient.address || ''
   }
   showModal.value = true

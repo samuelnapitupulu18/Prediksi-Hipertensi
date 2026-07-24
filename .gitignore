@@ -1,0 +1,62 @@
+# ============================================================================
+# Berkas yang TIDAK perlu masuk repositori
+# ============================================================================
+
+# --- Dependensi -------------------------------------------------------------
+node_modules/
+vendor/
+.venv/
+venv/
+env/
+
+# --- Hasil build ------------------------------------------------------------
+frontend/dist/
+frontend/.vite/
+*.tsbuildinfo
+
+# --- Cache Python -----------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Konfigurasi rahasia ----------------------------------------------------
+# .env memuat kredensial basis data; hanya .env.example yang dibagikan.
+.env
+backend/.env
+!.env.example
+!backend/.env.example
+
+# --- Laravel ----------------------------------------------------------------
+backend/storage/*.key
+backend/storage/framework/cache/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/logs/*.log
+backend/bootstrap/cache/*.php
+
+# --- Berkas sementara & keluaran eksperimen ---------------------------------
+*.log
+*.tmp
+hasil_eksperimen*.json
+ml-engine/hasil_*.json
+
+# --- Konfigurasi alat lokal -------------------------------------------------
+# .claude/ memuat pengaturan Claude Code dengan jalur khusus komputer ini,
+# bukan bagian dari aplikasi.
+.claude/
+
+# --- Sistem operasi & editor ------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+*.swp
+*~
+
+# --- Catatan ----------------------------------------------------------------
+# Artefak model (ml-engine/artifacts/) dan dataset (ml-engine/data/) SENGAJA
+# tetap dilacak, karena keduanya diperlukan agar hasil penelitian dapat
+# direproduksi oleh penguji tanpa perlu melatih ulang dari awal.

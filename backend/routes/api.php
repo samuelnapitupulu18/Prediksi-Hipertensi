@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ActivityLogController;
+use App\Http\Controllers\Api\OptimizationController;
 use Illuminate\Support\Facades\Route;
 
 // Public route for authentication
@@ -27,6 +28,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // Patient routes
     Route::apiResource('patients', PatientController::class);
     
+    // Perbandingan XGBoost Default vs XGBoost + SGO (iterasi diatur pengguna)
+    Route::post('/optimization/compare', [OptimizationController::class, 'compare']);
+    // Uji waktu eksekusi kedua model pada jumlah iterasi boosting yang sama
+    Route::post('/optimization/timing', [OptimizationController::class, 'timing']);
+    // Metadata model produksi (metrik nyata hasil pelatihan)
+    Route::get('/optimization/model-info', [OptimizationController::class, 'modelInfo']);
+
     // Screening endpoints
     Route::post('/screenings', [ScreeningController::class, 'store']);
     Route::get('/screenings/{id}', [ScreeningController::class, 'show']);

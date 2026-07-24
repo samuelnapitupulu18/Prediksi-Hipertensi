@@ -1,0 +1,12 @@
+{
+  "age": 22,
+  "gender": "male",
+  "bmi": 22.5,
+  "smoking_status": false,
+  "physical_activity": "moderate",
+  "family_history": true,
+  "red_meat_consumption": "moderate",
+  "salt_consumption": "moderate",
+  "systolic_bp": 120,
+  "diastolic_bp": 80
+}

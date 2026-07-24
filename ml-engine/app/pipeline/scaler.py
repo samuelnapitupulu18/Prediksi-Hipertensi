@@ -11,14 +11,13 @@ class StaticMinMaxScaler:
         "age": {"min": 18.0, "max": 100.0},
         "gender": {"min": 0.0, "max": 1.0},
         "bmi": {"min": 10.0, "max": 60.0},
-        "smoking_status": {"min": 0.0, "max": 2.0},
-        "alcohol_consumption": {"min": 0.0, "max": 2.0},
+        "smoking_status": {"min": 0.0, "max": 1.0},
         "physical_activity": {"min": 0.0, "max": 2.0},
         "family_history": {"min": 0.0, "max": 1.0},
-        "diabetes": {"min": 0.0, "max": 1.0},
+        "red_meat_consumption": {"min": 0.0, "max": 2.0},
+        "salt_consumption": {"min": 0.0, "max": 2.0},
         "systolic_bp": {"min": 70.0, "max": 250.0},
         "diastolic_bp": {"min": 40.0, "max": 150.0},
-        "cholesterol_level": {"min": 0.0, "max": 2.0}
     }
 
     @classmethod

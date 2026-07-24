@@ -9,27 +9,22 @@ class StaticLabelEncoder:
     # These mappings must exactly match the training data transformations
     MAPPINGS = {
         "gender": {
-            "male": 0,
-            "female": 1
-        },
-        "smoking_status": {
-            "never": 0,
-            "former": 1,
-            "current": 2
-        },
-        "alcohol_consumption": {
-            "none": 0,
-            "moderate": 1,
-            "heavy": 2
+            "female": 0,
+            "male": 1
         },
         "physical_activity": {
             "low": 0,
             "moderate": 1,
             "high": 2
         },
-        "cholesterol_level": {
-            "normal": 0,
-            "borderline": 1,
+        "red_meat_consumption": {
+            "low": 0,
+            "moderate": 1,
+            "high": 2
+        },
+        "salt_consumption": {
+            "low": 0,
+            "moderate": 1,
             "high": 2
         }
     }
@@ -47,10 +42,8 @@ class StaticLabelEncoder:
                     raise ValueError(f"Unknown category '{val}' for feature '{feature}'")
         
         # Handle boolean features
-        if "family_history" in encoded_data:
-            encoded_data["family_history"] = 1 if encoded_data["family_history"] else 0
-            
-        if "diabetes" in encoded_data:
-            encoded_data["diabetes"] = 1 if encoded_data["diabetes"] else 0
+        for bool_feature in ["family_history", "smoking_status"]:
+            if bool_feature in encoded_data:
+                encoded_data[bool_feature] = 1 if encoded_data[bool_feature] else 0
             
         return encoded_data

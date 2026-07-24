@@ -13,15 +13,14 @@ class DataPreprocessor:
     FEATURE_ORDER = [
         "age",
         "gender",
-        "bmi",
-        "smoking_status",
-        "alcohol_consumption",
-        "physical_activity",
-        "family_history",
-        "diabetes",
         "systolic_bp",
         "diastolic_bp",
-        "cholesterol_level"
+        "bmi",
+        "family_history",
+        "physical_activity",
+        "smoking_status",
+        "red_meat_consumption",
+        "salt_consumption"
     ]
 
     @classmethod

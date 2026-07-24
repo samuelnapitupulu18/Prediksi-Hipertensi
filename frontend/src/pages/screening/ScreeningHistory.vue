@@ -58,7 +58,8 @@ const fetchScreenings = async () => {
     const data = await screeningService.getScreenings()
     screenings.value = data.data // pagination wrapper
   } catch (e) {
-    console.error(e)
+    console.error('Gagal memuat riwayat skrining dari server:', e)
+    screenings.value = []
   } finally {
     loading.value = false
   }

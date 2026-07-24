@@ -70,7 +70,7 @@
                 <th class="h-12 px-6 text-left align-middle font-semibold">Usia</th>
                 <th class="h-12 px-6 text-left align-middle font-semibold">Tensi (Sys/Dia)</th>
                 <th class="h-12 px-6 text-left align-middle font-semibold">Tingkat Risiko</th>
-                <th class="h-12 px-6 text-right align-middle font-semibold">Kepercayaan (AI)</th>
+                <th class="h-12 px-6 text-right align-middle font-semibold">Aksi</th>
               </tr>
             </thead>
             <tbody class="[&_tr:last-child]:border-0 text-slate-700 dark:text-slate-300">
@@ -103,7 +103,11 @@
                     {{ item.prediction?.risk_level || 'Pending' }}
                   </span>
                 </td>
-                <td class="p-6 align-middle text-right font-mono font-bold">{{ item.prediction?.confidence_score ? (item.prediction.confidence_score * 100).toFixed(1) : 0 }}%</td>
+                <td class="p-6 align-middle text-right">
+                  <router-link :to="`/screening/${item.id}`" class="inline-flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 shadow-sm hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors">
+                    Lihat Detail
+                  </router-link>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -141,7 +145,17 @@ const fetchDashboardData = async () => {
     
     updateMetrics()
   } catch (e) {
-    console.error(e)
+    console.warn('Gagal memuat data dashboard', e)
+    statsData.value = {
+      total_screenings: 0,
+      high_risk_count: 0,
+      high_risk_percentage: 0,
+      total_patients: 0,
+      low_risk_count: 0,
+      low_risk_percentage: 0
+    }
+    recentScreenings.value = []
+    updateMetrics()
   } finally {
     isLoading.value = false
   }

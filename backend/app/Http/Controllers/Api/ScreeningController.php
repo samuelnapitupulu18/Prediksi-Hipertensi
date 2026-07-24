@@ -29,12 +29,18 @@ class ScreeningController extends Controller
         
         $query = Screening::with(['patient', 'prediction'])->latest();
         
-        // If user is not super_admin, they might only see their own screenings
-        if ($request->user()->role === 'perawat') {
-            $query->where('user_id', $request->user()->id);
-        }
+        // Both dokter and perawat have equal access to all screenings
 
         return response()->json($query->paginate($perPage));
+    }
+
+    public function show($id)
+    {
+        $screening = Screening::with(['patient', 'prediction'])->findOrFail($id);
+
+        return response()->json([
+            'data' => $screening
+        ]);
     }
 
     public function store(Request $request)
@@ -51,14 +57,13 @@ class ScreeningController extends Controller
             // Clinical Features
             'age' => 'required|integer|min:18|max:100',
             'bmi' => 'required|numeric|min:10|max:60',
-            'smoking_status' => 'required|in:never,former,current',
-            'alcohol_consumption' => 'required|in:none,moderate,heavy',
+            'smoking_status' => 'required|boolean',
+            'red_meat_consumption' => 'required|in:low,moderate,high',
+            'salt_consumption' => 'required|in:low,moderate,high',
             'physical_activity' => 'required|in:low,moderate,high',
             'family_history' => 'required|boolean',
-            'diabetes' => 'required|boolean',
             'systolic_bp' => 'required|integer|min:70|max:250',
             'diastolic_bp' => 'required|integer|min:40|max:150',
-            'cholesterol_level' => 'required|in:normal,borderline,high',
         ]);
 
         try {
@@ -86,13 +91,12 @@ class ScreeningController extends Controller
                 'gender' => $validated['gender'],
                 'bmi' => $validated['bmi'],
                 'smoking_status' => $validated['smoking_status'],
-                'alcohol_consumption' => $validated['alcohol_consumption'],
+                'red_meat_consumption' => $validated['red_meat_consumption'],
+                'salt_consumption' => $validated['salt_consumption'],
                 'physical_activity' => $validated['physical_activity'],
                 'family_history' => $validated['family_history'],
-                'diabetes' => $validated['diabetes'],
                 'systolic_bp' => $validated['systolic_bp'],
                 'diastolic_bp' => $validated['diastolic_bp'],
-                'cholesterol_level' => $validated['cholesterol_level'],
             ];
 
             // 4. Call ML Engine via MLEngineService

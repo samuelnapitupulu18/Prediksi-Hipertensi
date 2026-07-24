@@ -1,11 +1,128 @@
 {
-    "version": "1.0.0-sgo-mock",
-    "algorithm": "XGBoost",
-    "optimization": "Social Group Optimization (SGO) - MOCK",
-    "hyperparameters": {
-        "learning_rate": 0.035,
-        "max_depth": 9,
-        "n_estimators": 285
+  "version": "2.0.0-sgo",
+  "algorithm": "XGBoost",
+  "optimization": "Social Group Optimization (SGO)",
+  "trained_at": "2026-07-23 15:36:22",
+  "dataset": {
+    "file": "dataset_hipertensi.csv",
+    "total_samples": 10000,
+    "split": {
+      "train": 6000,
+      "validation": 2000,
+      "test": 2000
     },
-    "description": "This is a synthetic dummy model generated for testing the API."
+    "class_distribution": {
+      "tidak_berisiko": 3486,
+      "berisiko": 6514
+    }
+  },
+  "task": "binary classification (0 = tidak berisiko, 1 = berisiko)",
+  "risk_level_thresholds": {
+    "low_max": 0.34,
+    "high_min": 0.66
+  },
+  "feature_order": [
+    "age",
+    "gender",
+    "systolic_bp",
+    "diastolic_bp",
+    "bmi",
+    "family_history",
+    "physical_activity",
+    "smoking_status",
+    "red_meat_consumption",
+    "salt_consumption"
+  ],
+  "hyperparameters": {
+    "learning_rate": 0.2344,
+    "max_depth": 7,
+    "n_estimators": 265
+  },
+  "hyperparameter_search": {
+    "method": "Social Group Optimization",
+    "iterations": 15,
+    "population_size": 6,
+    "seed": 42,
+    "fitness": "macro F1 pada data validasi",
+    "best_validation_fitness": 100.0,
+    "model_trainings": 186,
+    "optimization_seconds": 9.03
+  },
+  "metrics_test_set": {
+    "accuracy": 100.0,
+    "precision_macro": 100.0,
+    "recall_macro": 100.0,
+    "f1_macro": 100.0,
+    "auc": 100.0,
+    "confusion_matrix": [
+      [
+        697,
+        0
+      ],
+      [
+        0,
+        1303
+      ]
+    ]
+  },
+  "training_seconds": 0.05,
+  "feature_importance": [
+    {
+      "feature": "systolic_bp",
+      "importance": 0.5797,
+      "label": "Tekanan Darah Sistolik (TDS)"
+    },
+    {
+      "feature": "diastolic_bp",
+      "importance": 0.4203,
+      "label": "Tekanan Darah Diastolik (TDD)"
+    },
+    {
+      "feature": "age",
+      "importance": 0.0,
+      "label": "Usia"
+    },
+    {
+      "feature": "gender",
+      "importance": 0.0,
+      "label": "Jenis Kelamin"
+    },
+    {
+      "feature": "bmi",
+      "importance": 0.0,
+      "label": "Indeks Massa Tubuh (IMT)"
+    },
+    {
+      "feature": "family_history",
+      "importance": 0.0,
+      "label": "Riwayat Keluarga"
+    },
+    {
+      "feature": "physical_activity",
+      "importance": 0.0,
+      "label": "Aktivitas Fisik"
+    },
+    {
+      "feature": "smoking_status",
+      "importance": 0.0,
+      "label": "Status Perokok"
+    },
+    {
+      "feature": "red_meat_consumption",
+      "importance": 0.0,
+      "label": "Konsumsi Daging Merah"
+    },
+    {
+      "feature": "salt_consumption",
+      "importance": 0.0,
+      "label": "Konsumsi Garam"
+    }
+  ],
+  "notes": [
+    "Model dilatih dari dataset hipertensi asli, bukan data sintetis acak.",
+    "Pra-pemrosesan memakai StaticLabelEncoder dan StaticMinMaxScaler yang sama persis dengan yang dipakai saat inferensi.",
+    "Label dataset hanya dua kelas; tiga tingkat risiko pada antarmuka diturunkan dari ambang probabilitas, bukan dari label buatan.",
+    "Dataset hanya membedakan konsumsi daging dan garam menjadi dua tingkat (0 = rendah, 1 = tinggi), sedangkan form menyediakan tiga tingkat.",
+    "Kepentingan fitur dihitung dari model dengan metode gain."
+  ]
 }
