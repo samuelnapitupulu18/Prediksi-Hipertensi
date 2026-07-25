@@ -7,24 +7,25 @@ from app.models.xgboost_model import XGBoostModel
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Load the XGBoost model into memory
+    # Startup: muat model XGBoost ke memori satu kali saat server menyala,
+    # sehingga setiap permintaan /predict tidak perlu membaca berkas model lagi.
     print(f"Loading XGBoost model from {settings.MODEL_PATH}...")
     model = XGBoostModel()
-    
-    # We don't crash if the file isn't there yet, just log an error
-    # so we can run generate_mock_model.py later.
+
+    # Server tetap menyala walau berkas model belum ada, hanya mencatat
+    # peringatan — supaya model dapat dilatih lebih dulu tanpa crash.
     if os.path.exists(settings.MODEL_PATH):
         model.load(settings.MODEL_PATH, settings.MODEL_METADATA_PATH)
         print(f"Model loaded successfully. Version: {model.version}")
     else:
         print(f"WARNING: Model file not found at {settings.MODEL_PATH}.")
-        print("Please run scripts/generate_mock_model.py to create a dummy model.")
-        
+        print("Jalankan: python scripts/train_production_model.py untuk melatih model.")
+
     app.state.model = model
-    
+
     yield
-    
-    # Shutdown logic (if any)
+
+    # Logika shutdown (bila ada)
     print("Shutting down ML Engine...")
 
 app = FastAPI(

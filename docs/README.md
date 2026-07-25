@@ -5,6 +5,7 @@
 | Dokumen | Isi | Prioritas |
 |---|---|---|
 | [EKSPERIMEN_SGO.md](EKSPERIMEN_SGO.md) | Metodologi SGO, hasil pengukuran nyata, pembuktian nilai hyperparameter, dan **temuan penting mengenai dataset** | **Baca lebih dulu** |
+| [PENJELASAN_ML.md](PENJELASAN_ML.md) | Penjelasan sintaks & alur sistem machine learning langkah demi langkah — untuk menjelaskan kode saat sidang | **Tinggi** |
 | [PANDUAN_DEMO.md](PANDUAN_DEMO.md) | Cara menjalankan sistem, akun, alur demonstrasi 7 langkah, jawaban untuk pertanyaan penguji | Tinggi |
 | [../ml-engine/data/README.md](../ml-engine/data/README.md) | Asal-usul dataset, struktur kolom, peringatan mengenai kolom `Label` | Tinggi |
 | [../arsip/README.md](../arsip/README.md) | Berkas lama yang menghasilkan angka tidak sah, beserta penggantinya | Tinggi |
